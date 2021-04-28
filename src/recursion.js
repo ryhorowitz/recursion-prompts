@@ -32,18 +32,23 @@ var sum = function(array) {
 // arraySum([1,[2,3],[[4]],5]); // 15
 
 var arraySum = function(array) {
+
   if (array.length === 0) {
     return 0;
   }
-  if (array.length === 1) {
-    return array[0];
-  }
-  // if [0] is an array than recurse again
-  if (Array.isArray(array[0])) {
-    return (array[0][0] + arraySum(array[0].slice(1)));
-  } else {
-    return (array[0] + arraySum(array.slice(1)));
-  }
+  var flatArray = [];
+
+  array.forEach(function(value) {
+    if (Array.isArray(value)) {
+      flatArray.push(arraySum(value));
+    } else {
+    flatArray.push(value);
+    }
+  });
+
+  return flatArray.reduce( function( acc, value ) {
+    return acc + value;
+  });
 
 };
 
@@ -79,7 +84,34 @@ var sumBelow = function(n) {
 // 6. Get the integers within a range (x, y).
 // range(2,9); // [3,4,5,6,7,8]
 var range = function(x, y) {
+  var results = [];
+  if (x === y) {
+    return results;
+  }
+
+  if (x < y) {
+    // base case
+    x++
+    if (x === y) {
+      return results
+    }
+    results.push(x);
+
+    return results.concat(range(x, y));
+  }
+
+    if (x > y) {
+    // base case
+    x--
+    if (x === y) {
+      return results
+    }
+    results.push(x);
+
+    return results.concat(range(x, y));
+  }
 };
+
 
 // 7. Compute the exponent of a number.
 // The exponent of a number says how many times the base number is used as a factor.
@@ -87,6 +119,26 @@ var range = function(x, y) {
 // exponent(4,3); // 64
 // https://www.khanacademy.org/computing/computer-science/algorithms/recursive-algorithms/a/computing-powers-of-a-number
 var exponent = function(base, exp) {
+  if (exp >= 0) { //exp is positive
+    if (exp === 0) {
+      return 1;
+    }
+    if (exp % 2 === 0 ) {// is even  x^n = (x^2)n/2  6^6 = 6^2^3
+      y = base * base // base ^2
+      return exponent(y, (exp / 2));
+    }
+    return base * exponent(base, (exp - 1));
+
+  } else {   // negative exponent
+    if (exp === 0) {
+      return 1;
+    }
+    if (exp % 2 === 0 ) {// is even  x^n = (x^2)n/2  6^6 = 6^2^3
+      y = base * base // base ^2
+      return exponent(y, (exp / 2));
+    }
+    return (1 / base) * exponent(base, (exp + 1));
+  }
 };
 
 // 8. Determine if a number is a power of two.
